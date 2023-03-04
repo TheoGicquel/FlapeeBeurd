@@ -17,9 +17,15 @@ public class touchAction : MonoBehaviour
     void Update()
     {
      // on spacebar input, apply up velocity to gameobject
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0) || Input.touchCount > 0)
         {
             player.GetComponent<Rigidbody2D>().velocity = new Vector2(speed.x, speed.y);
+        }
+
+        // for debug, prevent bird from going too far below
+        if(player.transform.position.y < -5)
+        {
+            player.transform.position = new Vector3(player.transform.position.x, -5, player.transform.position.z);
         }
     }
 }
