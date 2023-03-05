@@ -20,9 +20,7 @@ public class moveBk : MonoBehaviour
     private Canvas canvas; 
     private const float resetX = 0.0f;
 
-    /// <summary>
-    /// Class <c>Point</c> models a point in a two-dimensional plane.
-    /// </summary>
+
     private void setupBackgrounds(GameObject[] backgroundObjects)
     {
         // move first backgournd to center 
@@ -106,12 +104,10 @@ public class moveBk : MonoBehaviour
     {
         //GetComponent<Rigidbody2D>().velocity = movement;
         
-
-     foreach(GameObject background in backgrounds) 
-        {
-           scrollBackground(background, new Vector2(-1, 0));
-
-        }
+    foreach(GameObject background in backgrounds) 
+    {
+        scrollBackground(background, new Vector2(-1, 0));
+    }
 
         
     }

@@ -7,6 +7,9 @@ public class movePipes : MonoBehaviour
     public Vector2 movement;
     public GameObject pipe1Up;
     public GameObject pipe1Down;
+
+    public GameObject checkpoint;
+
     public int itercount = 0;
     // private
     private Transform pipe1UpOriginalTransform;
@@ -17,12 +20,25 @@ public class movePipes : MonoBehaviour
 
     public bool verbose;
 
-    public void log(string msg)
+
+
+
+    void moveCheckpoint()
     {
-        if (verbose)
-        {
-            Debug.Log(msg);
-        }
+        // place checkpoint centered between pipes
+        float posX = pipe1UpOriginalTransform.position.x;
+        float posY = (pipe1UpOriginalTransform.position.y + pipe1DownOriginalTransform.position.y) / 2;
+        checkpoint.transform.position = new Vector3(posX, posY, checkpoint.transform.position.z);
+
+        // get width of pipe
+        float pipeScaleX = pipe1Up.transform.localScale.x;
+
+        // calculat height needed to fit between pipes
+        float checkpointHeight = pipe1UpOriginalTransform.position.y - pipe1DownOriginalTransform.position.y;
+
+        // scale checkpoint to fit between pipes
+        checkpoint.transform.localScale = new Vector3(pipeScaleX, checkpointHeight, checkpoint.transform.localScale.z);
+         
     }
 
 
@@ -34,27 +50,37 @@ public class movePipes : MonoBehaviour
 
         pipe1UpOriginalTransform = pipe1Up.transform;
         pipe1DownOriginalTransform = pipe1Down.transform;
-        log("pipe1UpOriginalTransform: " + pipe1UpOriginalTransform.position);
 
-
-
+        moveCheckpoint();
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if(gameState.Instance.getIsAlive()){
+
         pipe1Up.GetComponent<Rigidbody2D>().velocity = movement; // Déplacement du pipe haut 
         pipe1Down.GetComponent<Rigidbody2D>().velocity = movement; // Déplacement du pipe bas 
+
+        checkpoint.GetComponent<Rigidbody2D>().velocity = movement; // Déplacement du checkpoint
+
         pipeSize.x = pipe1Up.GetComponent<SpriteRenderer> ().bounds.size.x; // Récuperation de la taille d’un pipe  
         pipeSize.y = pipe1Up.GetComponent<SpriteRenderer> ().bounds.size.y; // Suffisant car ils ont la même taille
-       
         // Le pipe est sorti de l’écran ? Si oui appel de la méthode moveTORightPipe
         if (pipe1Up.transform.position.x < leftBottomCameraBorder.x - (pipeSize.x / 2))
         {
             moveToRightPipe();
         }
 
-  
+        }
+        else
+        {
+            pipe1Up.GetComponent<Rigidbody2D>().velocity = new Vector2(0,0); // Déplacement du pipe haut 
+            pipe1Down.GetComponent<Rigidbody2D>().velocity = new Vector2(0,0); // Déplacement du pipe bas 
+
+            checkpoint.GetComponent<Rigidbody2D>().velocity = new Vector2(0,0); // Déplacement du checkpoint
+        }
         
         
     }
@@ -63,9 +89,7 @@ public class movePipes : MonoBehaviour
     void moveToRightPipe()
     {
 
-        itercount++;
-        log("-- moveToRightPipe " + itercount + " --");
-        log("pipe1Up.transform.position: " + pipe1Up.transform.position); 
+
         float randomY =	Random.Range (1,4) - 2; // Tirage aléatoire d’un décalage en Y 
         
         
@@ -85,8 +109,8 @@ public class movePipes : MonoBehaviour
         
         tmpPos = new Vector3 (posX,posY, pipe1Down.transform.position.z); 
         pipe1Down.transform.position = tmpPos;
-        log("pipe1Up.transform.position: " + pipe1Up.transform.position); 
-        log("----------------" + itercount + "---------------");
+
+        moveCheckpoint();
 
     }
 }

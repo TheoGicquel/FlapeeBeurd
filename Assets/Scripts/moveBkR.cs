@@ -109,13 +109,23 @@ public class moveBkR : MonoBehaviour
     {
         //GetComponent<Rigidbody2D>().velocity = movement;
         
+    if(gameState.Instance.getIsAlive()){
 
      foreach(GameObject background in backgrounds) 
         {
            scrollBackground(background, new Vector2(-1, 0));
 
         }
+    }
+    else
+    {
+        // stop background
+        foreach(GameObject background in backgrounds) 
+        {
+           scrollBackground(background, new Vector2(0, 0));
 
+        }
+    }
         
     }
 }
